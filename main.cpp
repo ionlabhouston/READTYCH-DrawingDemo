@@ -93,17 +93,18 @@ parameter:
 UBYTE Display_Image(char *filenm, UWORD Panel_Width, UWORD Panel_Height, UDOUBLE Target_Memory_Addr, UBYTE BitsPerPixel){
     UWORD WIDTH = Panel_Width;
     UWORD HEIGHT = Panel_Height;
+    UBYTE *Local_Frame_Buf = NULL;
 
     UDOUBLE Imagesize;
 
     Imagesize = ((WIDTH * 1 % 8 == 0)? (WIDTH * 1 / 8 ): (WIDTH * 1 / 8 + 1)) * HEIGHT;
-    if((Refresh_Frame_Buf2 = (UBYTE *)malloc(Imagesize)) == NULL){
+    if((Local_Frame_Buf = (UBYTE *)malloc(Imagesize)) == NULL){
         Debug("Failed to apply for picture memory...\r\n");
         return -1;
     }
 
-    Paint_NewImage(Refresh_Frame_Buf2, WIDTH, HEIGHT, 0, BLACK);
-    Paint_SelectImage(Refresh_Frame_Buf2);
+    Paint_NewImage(Local_Frame_Buf, WIDTH, HEIGHT, 0, BLACK);
+    Paint_SelectImage(Local_Frame_Buf);
     Paint_SetBitsPerPixel(BitsPerPixel);
     Paint_Clear(WHITE);
 
@@ -122,29 +123,29 @@ UBYTE Display_Image(char *filenm, UWORD Panel_Width, UWORD Panel_Height, UDOUBLE
     switch(BitsPerPixel){
         case BitsPerPixel_8:{
             //Paint_DrawString_EN(10, 10, "8 bits per pixel 16 grayscale", &Font24, 0xF0, 0x00);
-            EPD_IT8951_8bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, false, Target_Memory_Addr);
+            EPD_IT8951_8bp_Refresh(Local_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Target_Memory_Addr);
             break;
         }
         case BitsPerPixel_4:{
             //Paint_DrawString_EN(10, 10, "4 bits per pixel 16 grayscale", &Font24, 0xF0, 0x00);
-            EPD_IT8951_4bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, false, Target_Memory_Addr,false);
+            EPD_IT8951_4bp_Refresh(Local_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Target_Memory_Addr,false);
             break;
         }
         case BitsPerPixel_2:{
             //Paint_DrawString_EN(10, 10, "2 bits per pixel 4 grayscale", &Font24, 0xC0, 0x00);
-            EPD_IT8951_2bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, false, Target_Memory_Addr,false);
+            EPD_IT8951_2bp_Refresh(Local_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Target_Memory_Addr,false);
             break;
         }
         case BitsPerPixel_1:{
             //Paint_DrawString_EN(10, 10, "1 bit per pixel 2 grayscale", &Font24, 0x80, 0x00);
-            EPD_IT8951_1bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, A2_Mode, Target_Memory_Addr,false);
+            EPD_IT8951_1bp_Refresh(Local_Frame_Buf, 0, 0, WIDTH,  HEIGHT, A2_Mode, Target_Memory_Addr,false);
             break;
         }
     }
 
-    if(Refresh_Frame_Buf2 != NULL){
-        free(Refresh_Frame_Buf2);
-        Refresh_Frame_Buf2 = NULL;
+    if(Local_Frame_Buf != NULL){
+        free(Local_Frame_Buf);
+        Local_Frame_Buf = NULL;
     }
 
     return 0;
