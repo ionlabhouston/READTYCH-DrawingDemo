@@ -2,10 +2,10 @@ extern "C" {
 #include "lib/Config/DEV_Config.h"
 #include "lib/GUI/GUI_BMPfile.h"
 #include "lib/GUI/GUI_Paint.h"
+#include "lib/e-Paper/EPD_IT8951.h"
 }
 #include "lib/Wacom/BasicTypes.h"
 #include "lib/Wacom/WacomI2CHandler.h"
-#include "lib/e-Paper/EPD_IT8951.h"
 
 #include "CommandLineArgumentHandler.h"
 
@@ -154,7 +154,7 @@ UBYTE Display_Image(char *filenm, UWORD Panel_Width, UWORD Panel_Height, UDOUBLE
 }
 
 int paintBackground() {
-   Display_Image((char *)"/home/pi/Dev/READTYCH-DrawingDemo/Notebook2.bmp", Panel_Width, Panel_Height, Init_Target_Memory_Addr, BitsPerPixel_1);
+   Display_Image((char *)"/home/pi/Dev/READTYCH-DrawingDemo/pic/Notebook2.bmp", Panel_Width, Panel_Height, Init_Target_Memory_Addr, BitsPerPixel_1);
    return(0);
 }
 

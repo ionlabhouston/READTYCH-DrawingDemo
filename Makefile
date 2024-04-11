@@ -8,11 +8,11 @@ DIR_Wacom = ./lib/Wacom
 DIR_BIN      = ./bin
 
 OBJ_CPP = $(wildcard ${DIR_Config}/*.cpp ${DIR_EPD}/*.cpp ${DIR_FONTS}/*.cpp ${DIR_GUI}/*.cpp *.cpp ${DIR_Wacom}/*.cpp )
-OBJ_C = $(wildcard ${DIR_Config}/*.c ${DIR_EPD}/*.c ${DIR_FONTS}/*.c ${DIR_GUI}/*.c ${DIR_Examples}/*.c )
+OBJ_C = $(wildcard ${DIR_Config}/*.c ${DIR_EPD}/*.c ${DIR_FONTS}/*.c ${DIR_GUI}/*.c )
 OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
 OBJ_OPP = $(patsubst %.cpp,${DIR_BIN}/%.o,$(notdir ${OBJ_CPP}))
 
-TARGET = epd
+TARGET = penDraw
 
 CC = gcc
 
@@ -45,9 +45,6 @@ ${DIR_BIN}/%.o:$(DIR_FONTS)/%.c
 	$(CC) $(CFLAGS) -c  $< -o $@ 
 	
 ${DIR_BIN}/%.o:$(DIR_GUI)/%.c
-	$(CC) $(CFLAGS) -c  $< -o $@ 
-	
-${DIR_BIN}/%.o:$(DIR_Examples)/%.c
 	$(CC) $(CFLAGS) -c  $< -o $@ 
 
 clean :
