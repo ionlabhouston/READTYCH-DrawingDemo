@@ -313,6 +313,7 @@ int main(int argc, char *argv[])
     signal(SIGINT, Handler);
     int screen = 2;
     int status; 
+    std::thread displayThread(updateDisplay);
 
     //Init the BCM2835 Device
     if(DEV_Module_Init()!=0){
