@@ -115,8 +115,10 @@ UBYTE Display_Image(char *filenm, UWORD Panel_Width, UWORD Panel_Height, UDOUBLE
     char Path[30];
     sprintf(Path,filenm, WIDTH, HEIGHT);
 
+    Debug("Reading file %s\r\n", Path);
     GUI_ReadBmp(Path, 0, 0);
 
+    Debug("Drawing image\r\n");
     //you can draw your character and pattern on the image, for color definition of all BitsPerPixel, you can refer to GUI_Paint.h, 
     //Paint_DrawRectangle(50, 50, WIDTH/2, HEIGHT/2, 0x30, DOT_PIXEL_3X3, DRAW_FILL_EMPTY);
     //Paint_DrawCircle(WIDTH*3/4, HEIGHT/4, 100, 0xF0, DOT_PIXEL_2X2, DRAW_FILL_EMPTY);
