@@ -46,7 +46,9 @@ struct TabletData tabletData;
 IT8951_Dev_Info Dev_Info = {0, 0};
 UWORD Panel_Width;
 UWORD Panel_Height;
-UWORD brush_Radius = 8;
+UWORD Brush_Radius = 8;
+UWORD Screen_Refresh_ms = 200000;
+
 UWORD Min_X = 0;
 UWORD Max_X = 0;
 UWORD Min_Y = 0;
@@ -263,7 +265,7 @@ int paintBrush() {
 void updateDisplay() {
     while (1==1) {
        paintBrush();
-       usleep(200000);
+       usleep(Screen_Refresh_ms);
     }
 }
 
@@ -285,12 +287,12 @@ int handleTasks() {
         tabletHandler->queryPenData();
 
         if (tabletData.touchDown) {
-                addBrushPoint(tabletData.transformedX, tabletData.transformedY, brush_Radius);
+                addBrushPoint(tabletData.transformedX, tabletData.transformedY, Brush_Radius);
                 if ((tabletData.transformedX < 100) && (resetDisplay == false)) {
                         resetDisplay = true;
                         //EPD_IT8951_Clear_Refresh(Dev_Info, Init_Target_Memory_Addr, INIT_Mode);
                         paintBackground();
-                        paintInit(brush_Radius);
+                        paintInit(Brush_Radius);
                 } else if (tabletData.transformedX > 100) {
                         resetDisplay = false;
                 }
@@ -369,7 +371,7 @@ int main(int argc, char *argv[])
     //display the background
     paintBackground();
 
-    paintInit(brush_Radius);
+    paintInit(Brush_Radius);
 
     //process the loop
     handleTasks();
