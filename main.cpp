@@ -137,7 +137,7 @@ UBYTE Display_Image(char *filenm, UWORD Panel_Width, UWORD Panel_Height, UDOUBLE
         }
         case BitsPerPixel_1:{
             //Paint_DrawString_EN(10, 10, "1 bit per pixel 2 grayscale", &Font24, 0x80, 0x00);
-            EPD_IT8951_1bp_Refresh(Refresh_Frame_Buf2, (UWORD)0, (UWORD)0, WIDTH,  HEIGHT, A2_Mode, Target_Memory_Addr,false);
+            EPD_IT8951_1bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, A2_Mode, Target_Memory_Addr,false);
             break;
         }
     }
