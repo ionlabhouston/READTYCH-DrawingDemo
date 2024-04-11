@@ -46,8 +46,8 @@ struct TabletData tabletData;
 IT8951_Dev_Info Dev_Info = {0, 0};
 UWORD Panel_Width;
 UWORD Panel_Height;
-UWORD Brush_Radius = 8;
-UWORD Screen_Refresh_ms = 200000;
+UWORD Brush_Radius = 4;
+UWORD Screen_Refresh_ms = 100000;
 
 UWORD Min_X = 0;
 UWORD Max_X = 0;
