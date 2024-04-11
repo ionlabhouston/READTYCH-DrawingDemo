@@ -30,10 +30,10 @@ ${TARGET}:${OBJ_O} ${OBJ_OPP}
 	$(CC) $(CFLAGS) $(OBJ_O) $(OBJ_OPP) -o $@ $(LIB) 
 
 ${DIR_BIN}/%.o:%.cpp
-    $(CC) $(CFLAGS) -c  $< -o $@
+	$(CC) $(CFLAGS) -c  $< -o $@
 
 ${DIR_BIN}/%.o:$(DIR_Wacom)/%.cpp
-    $(CC) $(CFLAGS) -c  $< -o $@
+	$(CC) $(CFLAGS) -c  $< -o $@
 
 ${DIR_BIN}/%.o:$(DIR_Config)/%.c
 	$(CC) $(CFLAGS) -c  $< -o $@ 

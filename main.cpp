@@ -1,10 +1,12 @@
 extern "C" {
-#include "../lib/Config/DEV_Config.h"
-#include "../lib/GUI/GUI_BMPfile.h"
-#include "../lib/GUI/GUI_Paint.h"
+#include "lib/Config/DEV_Config.h"
+#include "lib/GUI/GUI_BMPfile.h"
+#include "lib/GUI/GUI_Paint.h"
 }
-#include "../lib/Wacom/BasicTypes.h"
-#include "../lib/Wacom/WacomI2CHandler.h"
+#include "lib/Wacom/BasicTypes.h"
+#include "lib/Wacom/WacomI2CHandler.h"
+#include "lib/e-Paper/EPD_IT8951.h"
+
 #include "CommandLineArgumentHandler.h"
 
 #include <math.h>
@@ -14,6 +16,7 @@ extern "C" {
 #include <thread>
 
 #define Enhance false
+#define Four_Byte_Align false
 
 #define USE_Factory_Test false
 
@@ -61,30 +64,15 @@ int epd_mode = 0;	//0: no rotate, no mirror
 void  Handler(int signo){
     
     Debug("\r\nHandler:exit\r\n");
-    if(Refresh_Frame_Buf != NULL){
-        free(Refresh_Frame_Buf);
+    if(Refresh_Frame_Buf2 != NULL){
+        free(Refresh_Frame_Buf2);
         Debug("free Refresh_Frame_Buf\r\n");
-        Refresh_Frame_Buf = NULL;
+        Refresh_Frame_Buf2 = NULL;
     }
-    if(Panel_Frame_Buf != NULL){
-        free(Panel_Frame_Buf);
-        Debug("free Panel_Frame_Buf\r\n");
-        Panel_Frame_Buf = NULL;
-    }
-    if(Panel_Area_Frame_Buf != NULL){
-        free(Panel_Area_Frame_Buf);
-        Debug("free Panel_Area_Frame_Buf\r\n");
-        Panel_Area_Frame_Buf = NULL;
-    }
-    if(bmp_src_buf != NULL){
-        free(bmp_src_buf);
-        Debug("free bmp_src_buf\r\n");
-        bmp_src_buf = NULL;
-    }
-    if(bmp_dst_buf != NULL){
-        free(bmp_dst_buf);
-        Debug("free bmp_dst_buf\r\n");
-        bmp_dst_buf = NULL;
+    if(Refresh_Frame_Buf3 != NULL){
+        free(Refresh_Frame_Buf3);
+        Debug("free Refresh_Frame_Buf\r\n");
+        Refresh_Frame_Buf3 = NULL;
     }
 	if(Dev_Info.Panel_W != 0){
 		Debug("Going to sleep\r\n");
@@ -95,7 +83,7 @@ void  Handler(int signo){
 }
 
 /******************************************************************************
-function: Display_BMP_Example
+function: Display_Image
 parameter:
     Panel_Width: Width of the panel
     Panel_Height: Height of the panel
@@ -114,14 +102,13 @@ UBYTE Display_Image(char *filenm, UWORD Panel_Width, UWORD Panel_Height, UDOUBLE
     UDOUBLE Imagesize;
 
     Imagesize = ((WIDTH * BitsPerPixel % 8 == 0)? (WIDTH * BitsPerPixel / 8 ): (WIDTH * BitsPerPixel / 8 + 1)) * HEIGHT;
-    if((Refresh_Frame_Buf = (UBYTE *)malloc(Imagesize)) == NULL) {
+    if((Refresh_Frame_Buf2 = (UBYTE *)malloc(Imagesize)) == NULL) {
         Debug("Failed to apply for black memory...\r\n");
         return -1;
     }
 
-    Paint_NewImage(Refresh_Frame_Buf, WIDTH, HEIGHT, 0, BLACK);
-    Paint_SelectImage(Refresh_Frame_Buf);
-	Epd_Mode(epd_mode);
+    Paint_NewImage(Refresh_Frame_Buf2, WIDTH, HEIGHT, 0, BLACK);
+    Paint_SelectImage(Refresh_Frame_Buf2);
     Paint_SetBitsPerPixel(BitsPerPixel);
     Paint_Clear(WHITE);
 
@@ -138,32 +125,30 @@ UBYTE Display_Image(char *filenm, UWORD Panel_Width, UWORD Panel_Height, UDOUBLE
     switch(BitsPerPixel){
         case BitsPerPixel_8:{
             //Paint_DrawString_EN(10, 10, "8 bits per pixel 16 grayscale", &Font24, 0xF0, 0x00);
-            EPD_IT8951_8bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr);
+            EPD_IT8951_8bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr);
             break;
         }
         case BitsPerPixel_4:{
             //Paint_DrawString_EN(10, 10, "4 bits per pixel 16 grayscale", &Font24, 0xF0, 0x00);
-            EPD_IT8951_4bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
+            EPD_IT8951_4bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
             break;
         }
         case BitsPerPixel_2:{
             //Paint_DrawString_EN(10, 10, "2 bits per pixel 4 grayscale", &Font24, 0xC0, 0x00);
-            EPD_IT8951_2bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
+            EPD_IT8951_2bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
             break;
         }
         case BitsPerPixel_1:{
             //Paint_DrawString_EN(10, 10, "1 bit per pixel 2 grayscale", &Font24, 0x80, 0x00);
-            EPD_IT8951_1bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, A2_Mode, Init_Target_Memory_Addr,false);
+            EPD_IT8951_1bp_Refresh(Refresh_Frame_Buf2, 0, 0, WIDTH,  HEIGHT, A2_Mode, Init_Target_Memory_Addr,false);
             break;
         }
     }
 
-    if(Refresh_Frame_Buf != NULL){
-        free(Refresh_Frame_Buf);
-        Refresh_Frame_Buf = NULL;
+    if(Refresh_Frame_Buf2 != NULL){
+        free(Refresh_Frame_Buf2);
+        Refresh_Frame_Buf2 = NULL;
     }
-
-    //DEV_Delay_ms(5000);
 
     return 0;
 }
@@ -175,7 +160,6 @@ int paintBackground() {
 
 int paintInit(UWORD Radius) {
     UDOUBLE Imagesize;
-    UWORD dia = Radius*2;
    
     Debug("Paint init....\r\n");
         //malloc enough memory for 1bp picture first
@@ -193,7 +177,6 @@ int paintInit(UWORD Radius) {
 
     Paint_NewImage(Refresh_Frame_Buf2, Panel_Width, Panel_Height, 0, BLACK);
     Paint_SelectImage(Refresh_Frame_Buf2);
-    //Epd_Mode(epd_mode);
     Paint_SetBitsPerPixel(1);
 
     Paint_Clear(WHITE);

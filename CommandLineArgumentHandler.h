@@ -1,7 +1,7 @@
 #ifndef _COMMAND_LINE_ARGUMENT_HANDLER_H
 #define _COMMAND_LINE_ARGUMENT_HANDLER_H
 
-#include "../lib/Wacom/BasicTypes.h"
+#include "lib/Wacom/BasicTypes.h"
 
 #include <vector>
 
