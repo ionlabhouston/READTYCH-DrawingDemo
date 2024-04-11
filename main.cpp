@@ -46,7 +46,7 @@ struct TabletData tabletData;
 IT8951_Dev_Info Dev_Info = {0, 0};
 UWORD Panel_Width;
 UWORD Panel_Height;
-UWORD brush_Radius = 32;
+UWORD brush_Radius = 8;
 UWORD Min_X = 0;
 UWORD Max_X = 0;
 UWORD Min_Y = 0;
@@ -221,7 +221,7 @@ int subFrame(UBYTE *Buf, UWORD bufWidth, UBYTE *subBuf, UWORD x, UWORD y, UWORD 
     widthByte = width * (Paint.BitsPerPixel) / 8;
     xByte = x * (Paint.BitsPerPixel) / 8;
     
-    Debug("Sub Frame: %d %d (%d %d) %d %d\r\n", x, y, width, height, xByte, widthByte);
+    //Debug("Sub Frame: %d %d (%d %d) %d %d\r\n", x, y, width, height, xByte, widthByte);
         
     for (k =0 ; k < height; k++) {
         for (j = 0; j < widthByte; j++) {
