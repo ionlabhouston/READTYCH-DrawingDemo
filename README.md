@@ -24,4 +24,5 @@ sudo make install
 git clone https://github.com/ionlabhouston/READTYCH-DrawingDemo.git
 
 cd READTYCH-DrawingDemo
+
 make
